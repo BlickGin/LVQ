@@ -22,14 +22,14 @@ def readfile(filename, choix):
         csv_row = line.split(";")
         for column, item in enumerate(csv_row):
             csv_row[column] = float(item)
-        csv_data_row = organise_tableau_lab2(csv_row, choix)
+        csv_data_row = organise_tableau_lab3(csv_row, choix)
         data.append(csv_data_row)
 
     random.shuffle(data)
     return data
 
 
-def organise_tableau_lab2(row_data, choix):
+def organise_tableau_lab3(row_data, choix):
 
     # choix/ 1240: statiques/40 ; 1250: statiques/50 ; 1260: statiques/60 ; 2640: tous/40; 2650: tous/50; 2660: tous/60;
     filtered_row_data = []
@@ -63,14 +63,75 @@ def organise_tableau_lab2(row_data, choix):
     else:
         print("Erreur: config mal choisie")
 
-    filtered_row_data[0] = nb2output[filtered_row_data[0]]
-
+#    filtered_row_data[0] = nb2output[filtered_row_data[0]]
+    filtered_row_data[0] = int(filtered_row_data[0])
     return filtered_row_data
 
 
-def choose_prototype():
-    return None
+def choose_prototype(filtered_data, k):
+    prototypes = []
+    k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    for i in filtered_data:
+        if i[0] == 0.0 and k_counter[0] < k:
+            prototypes.append(i)
+            k_counter[0] += 1
+        if i[0] == 1.0 and k_counter[1] < k:
+            prototypes.append(i)
+            k_counter[1] += 1
+        if i[0] == 2.0 and k_counter[2] < k:
+            prototypes.append(i)
+            k_counter[2] += 1
+        if i[0] == 3.0 and k_counter[3] < k:
+            prototypes.append(i)
+            k_counter[3] += 1
+        if i[0] == 4.0 and k_counter[4] < k:
+            prototypes.append(i)
+            k_counter[4] += 1
+        if i[0] == 5.0 and k_counter[5] < k:
+            prototypes.append(i)
+            k_counter[5] += 1
+        if i[0] == 6.0 and k_counter[6] < k:
+            prototypes.append(i)
+            k_counter[6] += 1
+        if i[0] == 7.0 and k_counter[7] < k:
+            prototypes.append(i)
+            k_counter[7] += 1
+        if i[0] == 8.0 and k_counter[8] < k:
+            prototypes.append(i)
+            k_counter[8] += 1
+        if i[0] == 9.0 and k_counter[9] < k:
+            prototypes.append(i)
+            k_counter[9] += 1
+    return prototypes
 
+# data = readfile('data_train.csv', STATIC_40)
+# prot = choose_prototype(data, int(input("k= ")))
+# print(prot)
+
+
+# k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+# for i in prot:
+#     if i == 0.0:
+#         k_counter[0] += 1
+#     if i == 1.0:
+#         k_counter[1] += 1
+#     if i == 2.0:
+#         k_counter[2] += 1
+#     if i == 3.0:
+#         k_counter[3] += 1
+#     if i == 4.0:
+#         k_counter[4] += 1
+#     if i == 5.0:
+#         k_counter[5] += 1
+#     if i == 6.0:
+#         k_counter[6] += 1
+#     if i == 7.0:
+#         k_counter[7] += 1
+#     if i == 8.0:
+#         k_counter[8] += 1
+#     if i == 9.0:
+#         k_counter[9] += 1
+# print(k_counter)
 # start = time.time()
 # data = readfile('data_test.csv', 1240)
 # data2 = readfile('data_test.csv', 1250)
