@@ -28,6 +28,7 @@ def readfile(filename, choix):
     random.shuffle(data)
     return data
 
+
 def organise_tableau_lab2(row_data, choix):
 
     # choix/ 1240: statiques/40 ; 1250: statiques/50 ; 1260: statiques/60 ; 2640: tous/40; 2650: tous/50; 2660: tous/60;
@@ -65,6 +66,10 @@ def organise_tableau_lab2(row_data, choix):
     filtered_row_data[0] = nb2output[filtered_row_data[0]]
 
     return filtered_row_data
+
+
+def choose_prototype():
+    return None
 
 # start = time.time()
 # data = readfile('data_test.csv', 1240)
