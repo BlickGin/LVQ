@@ -1,0 +1,358 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="Toplevel_2">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="tk.Frame" id="Frame_12">
+        <property name="height">200</property>
+        <property name="relief">flat</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+        <child>
+          <object class="tk.Frame" id="Frame_7">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="padx">20</property>
+              <property name="pady">20</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="New_Network">
+                <property name="command">on_new_network_click</property>
+                <property name="text" translatable="yes">New Network</property>
+                <property name="width">15</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Import_Network">
+                <property name="command">on_import_network_click</property>
+                <property name="compound">top</property>
+                <property name="takefocus">true</property>
+                <property name="text" translatable="yes">Import Network</property>
+                <property name="width">15</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Export_Network">
+                <property name="command">on_export_network_click</property>
+                <property name="text" translatable="yes">Export Network</property>
+                <property name="width">15</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="tk.LabelFrame" id="Frame_Networks_List">
+            <property name="height">200</property>
+            <property name="text" translatable="yes">Networks List</property>
+            <property name="width">300</property>
+            <layout>
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="tk.Listbox" id="Network_list">
+                <property name="relief">flat</property>
+                <property name="selectmode">single</property>
+                <property name="takefocus">false</property>
+                <property name="width">50</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="tk.LabelFrame" id="Frame_Network_Info">
+            <property name="height">200</property>
+            <property name="padx">10</property>
+            <property name="pady">10</property>
+            <property name="text" translatable="yes">Network Info</property>
+            <property name="width">300</property>
+            <layout>
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+            <child>
+              <object class="tk.Label" id="Network_Infos">
+                <property name="anchor">w</property>
+                <property name="height">10</property>
+                <property name="height">10</property>
+                <property name="justify">left</property>
+                <property name="width">60</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="Frame_13">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+          <property name="sticky">w</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="Frame_2">
+        <property name="height">200</property>
+        <property name="padding">30</property>
+        <property name="relief">flat</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+          <property name="sticky">e</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="learn">
+            <property name="command">on_click_learn_button</property>
+            <property name="text" translatable="yes">Start Learning</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="test">
+            <property name="command">on_click_test_button</property>
+            <property name="text" translatable="yes">Start Testing</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="export_data">
+            <property name="text" translatable="yes">Export Graph to CSV</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="pady">2</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="ttk.Frame" id="New_Network_Window">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <rows>
+        <row id="1">
+          <property name="pad">5</property>
+        </row>
+        <row id="2">
+          <property name="pad">10</property>
+        </row>
+        <row id="3">
+          <property name="pad">10</property>
+        </row>
+        <row id="4">
+          <property name="pad">10</property>
+        </row>
+        <row id="5">
+          <property name="pad">10</property>
+        </row>
+        <row id="6">
+          <property name="pad">10</property>
+        </row>
+        <row id="7">
+          <property name="pad">10</property>
+        </row>
+      </rows>
+    </layout>
+    <child>
+      <object class="ttk.Label" id="Network_Name">
+        <property name="text" translatable="yes">Network Name</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="pady">10</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Entry" id="Network_Name_Entry">
+        <layout>
+          <property name="column">1</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="Number_Of_Prototype">
+        <property name="justify">center</property>
+        <property name="text" translatable="yes">Number of prototype
+for each class</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="padx">10</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="Number_Of_Inputs">
+        <property name="text" translatable="yes">Number of inputs</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Entry" id="Number_Of_Prototypes_Entry">
+        <layout>
+          <property name="column">1</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="ok">
+        <property name="command">on_ok_click</property>
+        <property name="text" translatable="yes">OK</property>
+        <layout>
+          <property name="column">1</property>
+          <property name="pady">10</property>
+          <property name="propagate">True</property>
+          <property name="row">8</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Menubutton" id="Number_Of_Inputs_Menu_Button">
+        <property name="direction">below</property>
+        <property name="textvariable">string:input_type</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+        </layout>
+        <child>
+          <object class="tk.Menu" id="Number_Of_Inputs_Menu">
+            <property name="tearoff">false</property>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_1">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Static with 40 data</property>
+                <property name="value">Static with 40 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_2">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Static with 50 data</property>
+                <property name="value">Static with 50 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_3">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Static with 60 data</property>
+                <property name="value">Static with 60 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_4">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Dynamic with 40 data</property>
+                <property name="value">Dynamic with 40 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_5">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Dynamic with 50 data</property>
+                <property name="value">Dynamic with 50 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="Input_Type_6">
+                <property name="command">on_selected_entry</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">Dynamic with 60 data</property>
+                <property name="value">Dynamic with 60 data</property>
+                <property name="variable">string:input_type</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
