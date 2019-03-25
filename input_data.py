@@ -1,5 +1,7 @@
 
 import random
+import math
+import numpy
 from Defines import *
 
 nb2output = {0.0: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -13,7 +15,9 @@ nb2output = {0.0: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              8.0: [0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
              9.0: [0, 0, 0, 0, 0, 0, 0, 0, 0, 1]}
 
-
+#***********************************************************************************************************************
+# Function to read a data csv file with ";" separator and stores it in a list.
+#-----------------------------------------------------------------------------------------------------------------------
 def readfile(filename, choix):
 
     data = []
@@ -28,7 +32,11 @@ def readfile(filename, choix):
     random.shuffle(data)
     return data
 
-
+#***********************************************************************************************************************
+# Function to organise the data as instructed for the lab:
+#   - row_data: row of data to be organised
+#   - choix: selection of what data will be used: Static or Static+Dynamic, first 40,50,60 samples
+#-----------------------------------------------------------------------------------------------------------------------
 def organise_tableau_lab3(row_data, choix):
 
     # choix/ 1240: statiques/40 ; 1250: statiques/50 ; 1260: statiques/60 ; 2640: tous/40; 2650: tous/50; 2660: tous/60;
@@ -67,46 +75,160 @@ def organise_tableau_lab3(row_data, choix):
     filtered_row_data[0] = int(filtered_row_data[0])
     return filtered_row_data
 
-
-def choose_prototype(filtered_data, k):
+#***********************************************************************************************************************
+# Function to control the values of a list:
+#-----------------------------------------------------------------------------------------------------------------------
+def controle_list(list,k):
+    for i in list:
+        if int(i)-k == 0:
+            return 0
+        else:
+            return 1
+#***********************************************************************************************************************
+# Function to initialize the prototypes that represent the classes:
+#   - FIRST_K: picks the first K elements for each class and deletes them from the training array
+#   - ARITH_MEAN: calculates thr arithmetic mean for every element sorting first the elements to their classes.
+#   - RANDOM_K_PICK: picks randomly with a probability k elements for each class which are eliminated. Stochastic principle is
+#                    iid experiments (independent and identically distributed)
+#-----------------------------------------------------------------------------------------------------------------------
+def choose_prototype(filtered_data, k, method):
     prototypes = []
-    k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    for i in filtered_data:
-        if i[0] == 0.0 and k_counter[0] < k:
-            prototypes.append(i)
-            k_counter[0] += 1
-        if i[0] == 1.0 and k_counter[1] < k:
-            prototypes.append(i)
-            k_counter[1] += 1
-        if i[0] == 2.0 and k_counter[2] < k:
-            prototypes.append(i)
-            k_counter[2] += 1
-        if i[0] == 3.0 and k_counter[3] < k:
-            prototypes.append(i)
-            k_counter[3] += 1
-        if i[0] == 4.0 and k_counter[4] < k:
-            prototypes.append(i)
-            k_counter[4] += 1
-        if i[0] == 5.0 and k_counter[5] < k:
-            prototypes.append(i)
-            k_counter[5] += 1
-        if i[0] == 6.0 and k_counter[6] < k:
-            prototypes.append(i)
-            k_counter[6] += 1
-        if i[0] == 7.0 and k_counter[7] < k:
-            prototypes.append(i)
-            k_counter[7] += 1
-        if i[0] == 8.0 and k_counter[8] < k:
-            prototypes.append(i)
-            k_counter[8] += 1
-        if i[0] == 9.0 and k_counter[9] < k:
-            prototypes.append(i)
-            k_counter[9] += 1
+    if k > 20:
+        k = 20
+        print("K ne doit dépasser 20.")
+    if method == FIRST_K:
+        k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        for i in filtered_data:
+            if i[0] == 0 and k_counter[0] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                print("index i: " + str(filtered_data.index(i)))
+                k_counter[0] += 1
+            if i[0] == 1 and k_counter[1] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[1] += 1
+            if i[0] == 2 and k_counter[2] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[2] += 1
+            if i[0] == 3 and k_counter[3] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[3] += 1
+            if i[0] == 4 and k_counter[4] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[4] += 1
+            if i[0] == 5 and k_counter[5] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[5] += 1
+            if i[0] == 6 and k_counter[6] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[6] += 1
+            if i[0] == 7 and k_counter[7] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[7] += 1
+            if i[0] == 8 and k_counter[8] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[8] += 1
+            if i[0] == 9 and k_counter[9] < k:
+                prototypes.append(i)
+                filtered_data.pop(filtered_data.index(i))
+                k_counter[9] += 1
+    if method == ARITH_MEAN:
+        prototypes = [[], [], [], [], [], [], [], [], [], []]
+        for i in filtered_data:
+            if i[0] == 0.0:
+                prototypes[0].append(i)
+            if i[0] == 1.0:
+                prototypes[1].append(i)
+            if i[0] == 2.0:
+                prototypes[2].append(i)
+            if i[0] == 3.0:
+                prototypes[3].append(i)
+            if i[0] == 4.0:
+                prototypes[4].append(i)
+            if i[0] == 5.0:
+                prototypes[5].append(i)
+            if i[0] == 6.0:
+                prototypes[6].append(i)
+            if i[0] == 7.0:
+                prototypes[7].append(i)
+            if i[0] == 8.0:
+                prototypes[8].append(i)
+            if i[0] == 9.0:
+                prototypes[9].append(i)
+        #print(prototypes)
+        prototypes = numpy.array(prototypes)
+        prototypes = numpy.array([prototypes[0].mean(axis=0), prototypes[1].mean(axis=0), prototypes[2].mean(axis=0), prototypes[3].mean(axis=0), prototypes[4].mean(axis=0), prototypes[5].mean(axis=0), prototypes[6].mean(axis=0), prototypes[7].mean(axis=0), prototypes[8].mean(axis=0), prototypes[9].mean(axis=0)])
+        #numpy.ndarray.tofile(prototype, "testaverage0.csv", sep=";", format="%s")
+        prototypes = numpy.ndarray.tolist(prototypes)
+
+        for j in range(10):
+            prototypes[j][0] = int(prototypes[j][0])
+            #print(prototype[j])
+            #print(len(prototype[j]))
+    if method == RANDOM_K_PICK:
+        k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        probabilityFactor = (1 - math.exp(-0.05*k)) *100
+        loop = 0
+        while controle_list(k_counter, k) == 1:
+            #print(loop)
+            loop += 1
+            for i in filtered_data:
+                if i[0] == 0 and k_counter[0] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    print("index i: " + str(filtered_data.index(i)))
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[0] += 1
+                if i[0] == 1 and k_counter[1] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[1] += 1
+                if i[0] == 2 and k_counter[2] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[2] += 1
+                if i[0] == 3 and k_counter[3] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[3] += 1
+                if i[0] == 4 and k_counter[4] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[4] += 1
+                if i[0] == 5 and k_counter[5] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[5] += 1
+                if i[0] == 6 and k_counter[6] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[6] += 1
+                if i[0] == 7 and k_counter[7] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[7] += 1
+                if i[0] == 8 and k_counter[8] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[8] += 1
+                if i[0] == 9 and k_counter[9] < k and random.randint(1, 100) < probabilityFactor:
+                    prototypes.append(i)
+                    filtered_data.pop(filtered_data.index(i))
+                    k_counter[9] += 1
+            print(loop)
     return prototypes
 
-# data = readfile('data_train.csv', STATIC_40)
-# prot = choose_prototype(data, int(input("k= ")))
-# print(prot)
+data = readfile('data_train.csv', STATIC_60)
+prot = choose_prototype(data, int(input("k= ")), 3)
+print(prot)
+print(len(data))
 
 
 # k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
