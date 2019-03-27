@@ -73,6 +73,7 @@ class Application:
         self.selected_network_filename = ""
         self.selected_network = None
         self.selected_nb_entry = 480
+        self.selected_proto_sel = 0
 
         # Gère la sélection d'un item dans la liste
         def curselect(event):
@@ -84,7 +85,7 @@ class Application:
             self.selected_network = net
             txt = "Nom : " + net.name + "\n\r" \
                                         "Nombre de prototype : " + str(net.number_of_proto) + "\n\r" \
-                                        "Fichier de données : "
+                                        "pourcentage réussite en VC : " + str((120 - net.vc_errors) * 100 / 120)
 
             self.netinfos_label.config(text=txt)
             print(net.error_count)
@@ -143,6 +144,7 @@ class Application:
         name_input = name_input_entry.get()
         number_of_prototypes = Number_Of_Prototypes_Entry.get()
         nb_input = self.selected_nb_entry
+        method = self.selected_proto_sel
         # data_path = data_path_entry.cget('path')
 
         try:
@@ -165,6 +167,7 @@ class Application:
                 net = Network(number_of_prototypes)
                 net.name = name_input
                 net.datatype = nb_input
+                net.proto_selection_method = method
 
                 self.nb_of_networks += 1
                 fname = "Network_" + str(self.nb_of_networks) + ".pkl"
@@ -199,8 +202,16 @@ class Application:
         elif selection == 'Input_Type_6':
             self.selected_nb_entry = 1560
 
+    def on_selected_method(self, selection):
+        if selection == 'method_1':
+            self.selected_proto_sel = FIRST_K
+        elif selection == 'method_2':
+            self.selected_proto_sel = ARITH_MEAN
+        elif selection == 'method_3':
+            self.selected_proto_sel = RANDOM_K_PICK
+
     def on_click_learn_button(self):
-        nb_epoch = 10
+        nb_epoch = 5
 
         n = self.selected_network
         dataset = 0
@@ -220,8 +231,8 @@ class Application:
 
         shuffled_input_train = readfile('data_train.csv', dataset)
         shuffled_input_vc = readfile('data_vc.csv', dataset)
-        print('data_train.csv')
-        # shuffled_input_vc = readfile('data_vc.csv', STATIC_60)
+
+        n.prototypes = choose_prototype(shuffled_input_train, n.number_of_proto, n.proto_selection_method)
         # shuffled_input_test = readfile('data_test.csv', STATIC_60)
 
         # d.draw_network()
@@ -230,21 +241,20 @@ class Application:
         count = 1
         old_error = 0
         stagnation = 0
-        while vc_error > 6 and count <= 20 and stagnation < 10:
+        while vc_error > 6 and count <= 50 and stagnation < 10:
             for i in range(nb_epoch):
                 error = 0
                 count_ep = 1
                 for j in shuffled_input_train:
-                    n.inputs = j[1:]
-                    n.outputs = j[0]
+                    n.input = j[1:]
+                    n.output = j[0]
                     n.epoch = i
-                    n.predict()
-                    n.train()
-                    out = []
-                    for h in range(10):
-                        out.append(n.couches[-1][h].acti)
+                    n.calculate_distance()
+                    n.learn()
 
-                    if out.index(max(out)) is not n.outputs.index(max(n.outputs)):
+                    out = n.closest_proto_from_input[0]
+
+                    if out is not n.output:
                         error += 1
                     # print("Trainig succesful, weight: ")
                     print(str(count_ep) + " / " + str(len(shuffled_input_train)))
@@ -257,27 +267,28 @@ class Application:
                 old_error = error
 
                 n.error_count.append(error)
-                print(n.outputs)
-                print(max(out))
+                n.epoch += 1
+
+                print(n.output)
+                print(out)
                 random.shuffle(shuffled_input_train)
 
             draw_graph(self.frame_13, n.error_count)
             vc_error = 0
             count += 1
             for j in shuffled_input_vc:
-                n.inputs = j[1:]
-                n.outputs = j[0]
-                n.predict()
+                n.input = j[1:]
+                n.output = j[0]
+                n.calculate_distance()
 
-                out = []
-                for h in range(10):
-                    out.append(n.couches[-1][h].acti)
+                out = n.closest_proto_from_input[0]
 
-                if out.index(max(out)) is not n.outputs.index(max(n.outputs)):
+                if out is not n.output:
                     vc_error += 1
                 print("VC Errors : " + str(vc_error))
 
-
+        n.vc_errors = vc_error
+        print(str(n.learning_rate))
 
         #
         # nb_epoch = 200
@@ -334,17 +345,17 @@ class Application:
         n = self.selected_network
         dataset = 0
 
-        if n.datatype is 480:
+        if n.datatype == 480:
             dataset = STATIC_40
-        elif n.datatype is 600:
+        elif n.datatype == 600:
             dataset = STATIC_50
-        elif n.datatype is 720:
+        elif n.datatype == 720:
             dataset = STATIC_60
-        elif n.datatype is 1040:
+        elif n.datatype == 1040:
             dataset = ALL_40
-        elif n.datatype is 1300:
+        elif n.datatype == 1300:
             dataset = ALL_50
-        elif n.datatype is 1560:
+        elif n.datatype == 1560:
             dataset = ALL_60
 
         shuffled_input_test = readfile('data_train.csv', dataset)
@@ -353,16 +364,14 @@ class Application:
         test_erreur = []
 
         for j in shuffled_input_test:
-            n.inputs = j[1:]
-            n.outputs = j[0]
-            n.predict()
+            n.input = j[1:]
+            n.output = j[0]
+            n.calculate_distance()
 
-        out = []
-        for h in range(10):
-            out.append(n.couches[-1][h].acti)
+            out = n.closest_proto_from_input[0]
 
-        if out.index(max(out)) is not n.outputs.index(max(n.outputs)):
-            test_erreur_count += 1
+            if out is not n.output:
+                test_erreur_count += 1
 
         # text = ""
         # for i in test_erreur:

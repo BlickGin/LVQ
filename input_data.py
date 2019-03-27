@@ -68,7 +68,7 @@ def organise_tableau_lab3(row_data, choix):
     return filtered_row_data
 
 
-def choose_prototype(filtered_data, k):
+def choose_prototype(filtered_data, k, method):
     prototypes = []
     k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     for i in filtered_data:
@@ -102,6 +102,7 @@ def choose_prototype(filtered_data, k):
         if i[0] == 9.0 and k_counter[9] < k:
             prototypes.append(i)
             k_counter[9] += 1
+
     return prototypes
 
 # data = readfile('data_train.csv', STATIC_40)
