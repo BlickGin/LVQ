@@ -43,10 +43,10 @@ class neural_net():
             self.vc_data = np.asmatrix([120, 26 * 60])
             self.test_data = np.asmatrix([1340, 26 * 60])
 
-    def setup(self, data_type):
-        data = readfile('data_train.csv', data_type)
-        vc_data = readfile('data_vc.csv', data_type)
-        test_data = readfile('data_test.csv', data_type)
+    def setup(self):
+        data = readfile('data_train.csv', self.input_caracteristics)
+        vc_data = readfile('data_vc.csv', self.input_caracteristics)
+        test_data = readfile('data_test.csv', self.input_caracteristics)
         data = np.asmatrix(data)
         vc_data = np.asmatrix(vc_data)
         test_data = np.asmatrix(test_data)
@@ -55,7 +55,7 @@ class neural_net():
         self.test_data = test_data
 
 
-    def train(self, data_type=STATIC_40):
+    def train(self):
         z = 0
         minimum_index = 0
         minimum_index_j = 0
