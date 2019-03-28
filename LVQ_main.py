@@ -1,5 +1,5 @@
 from LVQ.neural_net import *
-NB_EPOQUES = 40
+NB_EPOQUES = 10
 T_DONNEES = ALL_60
 NB_PROTO = 20
 x = np.zeros(NB_EPOQUES)
