@@ -1,6 +1,6 @@
 # ELE767 Lab 2
 
-from input_data import *
+from LVQ.input_data import *
 
 
 import matplotlib as mpl
@@ -18,9 +18,10 @@ from matplotlib import figure
 from matplotlib import axes
 import pygubu
 import pickle
-from save_load import *
-from input_data import *
-from Network import *
+from LVQ.save_load import *
+from LVQ.input_data import *
+from LVQ.Network import *
+from LVQ.neural_net import *
 
 
 class Dialog:
@@ -53,7 +54,6 @@ def draw_graph(frame, error_values):
     plot_widget = canvas.get_tk_widget()
 
     plot_widget.grid(row=0, column=0)
-    # tk.mainloop()
 
 
 class Application:
@@ -72,7 +72,7 @@ class Application:
 
         self.selected_network_filename = ""
         self.selected_network = None
-        self.selected_nb_entry = 480
+        self.selected_nb_entry = STATIC_40
         self.selected_proto_sel = 0
 
         # Gère la sélection d'un item dans la liste
@@ -84,12 +84,11 @@ class Application:
             self.selected_network_filename = picked
             self.selected_network = net
             txt = "Nom : " + net.name + "\n\r" \
-                                        "Nombre de prototype : " + str(net.number_of_proto) + "\n\r" \
-                                        "pourcentage réussite en VC : " + str((120 - net.vc_errors) * 100 / 120)
+                                        "Nombre de prototype : " + str(net.nb_of_prototypes)
 
             self.netinfos_label.config(text=txt)
-            print(net.error_count)
-            draw_graph(frame_13, net.error_count)
+            #percent_hit = net.vc_test()
+            # draw_graph(frame_13, 1)
 
         self.networks_listbox = net_lbox = builder.get_object('Network_list')
         self.networks_listbox.bind('<<ListboxSelect>>', curselect)
@@ -164,10 +163,10 @@ class Application:
                 print(name_input)
                 print(number_of_prototypes)
                 print(nb_input)
-                net = Network(number_of_prototypes)
+                net = neural_net(number_of_prototypes,nb_input) #Network(number_of_prototypes)
                 net.name = name_input
-                net.datatype = nb_input
-                net.proto_selection_method = method
+                net.setup()
+                #net.proto_selection_method = method
 
                 self.nb_of_networks += 1
                 fname = "Network_" + str(self.nb_of_networks) + ".pkl"
@@ -190,17 +189,17 @@ class Application:
 
     def on_selected_entry(self, selection):
         if selection == 'Input_Type_1':
-            self.selected_nb_entry = 480
+            self.selected_nb_entry = STATIC_40
         elif selection == 'Input_Type_2':
-            self.selected_nb_entry = 600
+            self.selected_nb_entry = STATIC_50
         elif selection == 'Input_Type_3':
-            self.selected_nb_entry = 720
+            self.selected_nb_entry = STATIC_60
         elif selection == 'Input_Type_4':
-            self.selected_nb_entry = 1040
+            self.selected_nb_entry = ALL_40
         elif selection == 'Input_Type_5':
-            self.selected_nb_entry = 1300
+            self.selected_nb_entry = ALL_50
         elif selection == 'Input_Type_6':
-            self.selected_nb_entry = 1560
+            self.selected_nb_entry = ALL_60
 
     def on_selected_method(self, selection):
         if selection == 'method_1':
@@ -211,124 +210,26 @@ class Application:
             self.selected_proto_sel = RANDOM_K_PICK
 
     def on_click_learn_button(self):
-        nb_epoch = 5
+        NB_EPOQUES = 10
 
         n = self.selected_network
-        dataset = 0
+        x = np.zeros(NB_EPOQUES)
+        vc = np.zeros(NB_EPOQUES)
+        test = np.zeros(NB_EPOQUES)
 
-        if n.datatype == 480:
-            dataset = STATIC_40
-        elif n.datatype == 600:
-            dataset = STATIC_50
-        elif n.datatype == 720:
-            dataset = STATIC_60
-        elif n.datatype == 1040:
-            dataset = ALL_40
-        elif n.datatype == 1300:
-            dataset = ALL_50
-        elif n.datatype == 1560:
-            dataset = ALL_60
 
-        shuffled_input_train = readfile('data_train.csv', dataset)
-        shuffled_input_vc = readfile('data_vc.csv', dataset)
+        for i in range(NB_EPOQUES):
+            n.learning_rate = 0.2 - (0.2 / NB_EPOQUES) * i
+            n.train()
+            x[i] = n.test_train()
+            vc[i] = n.vc_test()
+            test[i] = n.test()
+            draw_graph(self.frame_13, x)
 
-        n.prototypes = choose_prototype(shuffled_input_train, n.number_of_proto, n.proto_selection_method)
-        # shuffled_input_test = readfile('data_test.csv', STATIC_60)
+        print('Train results : ', x)
+        print('VC_results : ', vc)
+        print('Test_results : ', test)
 
-        # d.draw_network()
-
-        vc_error = 1000
-        count = 1
-        old_error = 0
-        stagnation = 0
-        while vc_error > 6 and count <= 50 and stagnation < 10:
-            for i in range(nb_epoch):
-                error = 0
-                count_ep = 1
-                for j in shuffled_input_train:
-                    n.input = j[1:]
-                    n.output = j[0]
-                    n.epoch = i
-                    n.calculate_distance()
-                    n.learn()
-
-                    out = n.closest_proto_from_input[0]
-
-                    if out is not n.output:
-                        error += 1
-                    # print("Trainig succesful, weight: ")
-                    print(str(count_ep) + " / " + str(len(shuffled_input_train)))
-                    count_ep += 1
-
-                print(str(i) + " : " + str(error) + " (total cycle:" + str(count) + " / stagnation number : " + str(stagnation) + " / 10)")
-                if abs(old_error-error) < 10:
-                    stagnation += 1
-
-                old_error = error
-
-                n.error_count.append(error)
-                n.epoch += 1
-
-                print(n.output)
-                print(out)
-                random.shuffle(shuffled_input_train)
-
-            draw_graph(self.frame_13, n.error_count)
-            vc_error = 0
-            count += 1
-            for j in shuffled_input_vc:
-                n.input = j[1:]
-                n.output = j[0]
-                n.calculate_distance()
-
-                out = n.closest_proto_from_input[0]
-
-                if out is not n.output:
-                    vc_error += 1
-                print("VC Errors : " + str(vc_error))
-
-        n.vc_errors = vc_error
-        print(str(n.learning_rate))
-
-        #
-        # nb_epoch = 200
-        # vc_error = 1000
-        # n = self.selected_network
-        # while vc_error > 2:
-        #     shuffled_input_train = inputs_train[:]
-        #     shuffle(shuffled_input_train)
-        #     shuffled_input_vc = inputs_vc[:]
-        #     shuffle(shuffled_input_vc)
-        #
-        #     for i in range(nb_epoch):
-        #         error = 0
-        #         for j in shuffled_input_train:
-        #             n.inputs = j
-        #             n.outputs = output_train[inputs_train.index(j)]
-        #             n.predict()
-        #             n.train()
-        #             out = [n.couches[-1][0].acti, n.couches[-1][1].acti]
-        #
-        #             if out.index(max(out)) is not n.outputs.index(max(n.outputs)):
-        #                 error += 1
-        #
-        #         n.error_count.append(error)
-        #         print(str(i) + " : " + str(error))
-        #
-        #     print(n.error_count)
-        #     draw_graph(self.frame_13, n.error_count)
-        #
-        #     vc_error = 0
-        #     for j in shuffled_input_vc:
-        #         n.inputs = j
-        #         n.outputs = output_vc[inputs_vc.index(j)]
-        #         n.predict()
-        #
-        #         out = [n.couches[-1][0].acti, n.couches[-1][1].acti]
-        #         if out.index(max(out)) is not n.outputs.index(max(n.outputs)):
-        #             vc_error += 1
-        #     print("VC Errors : " + str(vc_error))
-        #
         fname = self.selected_network_filename
         self.list_of_networks[fname] = n.name
         save(n, fname)
