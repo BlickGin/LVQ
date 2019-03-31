@@ -30,7 +30,11 @@ except:
 #                   7.  on_save_network_click (evenement, boutton)
 #                   8.  on_load_network_click (evenement, boutton)
 #                   9.  on_click_learn_button (evenement, boutton)
-#                   10. 
+#                   10. On_Click_LW_button (evenement, boutton fenêtre popup, apprentissage)
+#                   11. on_click_test_button (evenement, boutton)
+#                   12. on_click_load_w (evenement, boutton)
+#                   13. on_click_export_button (evenement, boutton)
+#                   14. draw_graph (création du graphique)
 #
 # ----------------------------------------------------------------------------------------------------------
 
@@ -54,7 +58,17 @@ class Application:
         self.selected_network_filename = ""
         self.selected_network = None
         self.selected_nb_entry = STATIC_40
-        self.selected_proto_sel = FIRST_K
+        self.selected_proto_sel = 1
+
+        # ---------------------------------------------- curselect -------------------------------------------------
+        #
+        #      La fonction curselect gère la selection des networks dans la liste. Elle définie un network
+        #      selectionné en un moment donné pour pouvoir intéragir avec celui-ci.
+        #
+        #      De plus, lorsqu'un nouveau network est selectionné les informations sont mise à jour dans le
+        #      bloc d'informations du network.
+        #
+        # ----------------------------------------------------------------------------------------------------------
 
         def curselect(event):
             widget = event.widget
@@ -67,11 +81,17 @@ class Application:
                 car = "STATIC " + car[2:]
             else:
                 car = "STATIC + DYNAMIC " + car[2:]
+            if self.selected_proto_sel == 1 :
+                car2 = "FIRST_K"
+            elif self.selected_proto_sel == 2:
+                car2 = "ARITH_MEAN"
+            elif self.selected_proto_sel == 3:
+                car2 = "RANDOM_W"
 
             txt = "Nom : " + self.selected_network.name + \
                                         "\n\rNombre de prototype : " + str(self.selected_network.nb_of_prototypes) + \
                                         "\n\rDonnées d'entrée : " + car +\
-                                        "\n\rInitialisation :" +\
+                                        "\n\rInitialisation : " + car2 +\
                                         "\n\rMeilleur résultat (test) : " + str(self.selected_network.best_performance)
 
             self.netinfos_label.config(text=txt)
@@ -79,6 +99,13 @@ class Application:
             # draw_graph(frame_13, 1)
 
         self.networks_listbox.bind('<<ListboxSelect>>', curselect)
+
+    # -------------------- on_new_network_click --------------------------------------------------
+    #       Lorsqu'on appuie sur le boutton new network on affiche un fenêtre Popup nommée
+    #       New_Network_Window et on la définie comme étant l'élément le plus en avant du
+    #       l'affiche.
+    # --------------------------------------------------------------------------------------------
+
     def on_new_network_click(self):
         self.builder2 = pygubu.Builder()
         self.builder2.add_from_file('Net_Ui1.ui')
@@ -89,10 +116,15 @@ class Application:
 
         self.frame_3 = self.builder2.get_object('New_Network_Window', top3)
         self.builder2.connect_callbacks(self)
-    #-------------------- ON ok Click -----------------------------------------------------------
-    # Une fois qu'on appuie sur le boutton Ok dans la fenêtre de création du network la fonction
-    # définie une liste des paramètres d'entrées
-    #--------------------------------------------------------------------------------------------
+
+    # -------------------- on_click_nnw_ok_button -------------------------------------------------------------
+    #
+    #       Une fois qu'on appuie sur le boutton Ok dans la fenêtre de création du network (popup) la fonction
+    #       lis les paramètres entrés dans les widget pour les utilisé pour créer un squelette de réseau. Puis,
+    #       ce réseau est ajouté à la liste de réseau dans l'affichage principal.
+    #
+    # ---------------------------------------------------------------------------------------------------------
+
     def on_click_nnw_ok_button(self):
         name_input = self.builder2.get_object('Network_Name_Entry').get()
         Number_Of_Prototypes = int(self.builder2.get_object('Number_Of_Prototypes_Entry').get())
@@ -114,6 +146,13 @@ class Application:
         else:
             tk.messagebox.showinfo("Error", "Please enter a network name")
         self.frame_3.master.destroy()
+    # -------------------- on_selected_entry ------------------------------------------------------------------
+    #
+    #       Cet événement se produit lorsque la valeur du menu de type d'entré change dans le popup de
+    #       création du réseau. La valeur servira à identifier les données d'entrées du réseau lors
+    #       de son initialisation.
+    #
+    # ---------------------------------------------------------------------------------------------------------
 
     def on_selected_entry(self, selection):
         if selection == 'Input_Type_1':
@@ -128,17 +167,46 @@ class Application:
             self.selected_nb_entry = ALL_50
         elif selection == 'Input_Type_6':
             self.selected_nb_entry = ALL_60
+
+    # -------------------- on_click_nnw_cancel_button ---------------------------------------------------------
+    #
+    #       DÉTRUIT la fenêtre Popup de création du réseau si on appuie sur le boutton cancel.
+    #
+    # ---------------------------------------------------------------------------------------------------------
+
     def on_click_nnw_cancel_button(self):
         self.frame_3.master.destroy()
+
+    # -------------------- on_delete_network_click ------------------------------------------------------------
+    #
+    #       retire le réseau selectionner de la liste des réseaux
+    #
+    # ---------------------------------------------------------------------------------------------------------
+
     def on_delete_network_click(self):
         select = self.networks_listbox.curselection()
         self.net_List.pop(select[0])
         self.networks_listbox.delete(select)
+
+    # -------------------- on_save_network_click ------------------------------------------------------------
+    #
+    #       Créer une version sérialiser de l'objet network selectionner dans la liste et la sauvegarde dans
+    #       le dossier du projet. Puis actualise la liste de réseaux.
+    #
+    # ---------------------------------------------------------------------------------------------------------
+
     def on_save_network_click(self):
         pickle.dump(self.selected_network, open(self.selected_network.name + ".pkl", "wb"))
         pos = self.networks_listbox.curselection()
         self.networks_listbox.delete(pos)
         self.networks_listbox.insert(pos, self.selected_network.name + "  (saved)")
+
+    # -------------------- on_load_network_click ------------------------------------------------------------
+    #
+    #       Ouvre une fenêtre popup pour selectionner le réseau à ouvrir.
+    #       Créer aussi une liste des fichiers disponibles pour l'ouverture
+    #
+    # ---------------------------------------------------------------------------------------------------------
     def on_load_network_click(self):
         self.builder2 = pygubu.Builder()
         self.builder2.add_from_file('Net_Ui1.ui')
@@ -148,6 +216,13 @@ class Application:
         self.builder2.connect_callbacks(self)
         cbox = self.builder2.get_object('load_combobox')
         cbox['values'] = file_list
+    # -------------------- lw_load_button_click ------------------------------------------------------------
+    #
+    #       Lorsqu'on appuie sur le boutton load dans la fenêtre popup le fichier choisis est ouvert.
+    #       On ajoute ensuite sont contenu à la liste des réseaux disponibles.
+    #
+    # -------------------------------------------------------------------------------------------------------
+
     def lw_load_button_click(self):
         cbox = self.builder2.get_object('load_combobox')
         with open(cbox.get(), 'rb') as pickle_file:
@@ -155,19 +230,29 @@ class Application:
         self.net_List.append(net)
         self.networks_listbox.insert(tk.END, net.name + "  (Loaded)")
         self.frame_3.master.destroy()
+
+    # -------------------- on_click_learn_button ------------------------------------------------------------
+    #
+    #       Le boutton learn fait apparaitre une fenêtre popup seulement si un network est selectionné.
+    #
+    # -------------------------------------------------------------------------------------------------------
+
     def on_click_learn_button(self):
-        self.builder2 = pygubu.Builder()
-        self.builder2.add_from_file('Net_Ui1.ui')
-        top3 = tk.Toplevel(self.mainwindow)
-        self.frame_3 = self.builder2.get_object('Learn_Window', top3)
-        self.builder2.connect_callbacks(self)
-    def on_selected_method(self, selection):
-            if selection == 'method_1':
-                self.selected_proto_sel = FIRST_K
-            elif selection == 'method_2':
-                self.selected_proto_sel = ARITH_MEAN
-            elif selection == 'method_3':
-                self.selected_proto_sel = RANDOM_K_PICK
+        try:
+            self.selected_network.name
+            self.builder2 = pygubu.Builder()
+            self.builder2.add_from_file('Net_Ui1.ui')
+            top3 = tk.Toplevel(self.mainwindow)
+            self.frame_3 = self.builder2.get_object('Learn_Window', top3)
+            self.builder2.connect_callbacks(self)
+        except:
+            tk.messagebox.showinfo("Error", "Please select a network from the network list")
+    # -------------------- On_Click_LW_button ---------------------------------------------------------------
+    #
+    #       Le boutton learn de la fenêtre popup prend les valeurs du NB d'époques et du taux d'apprentissage
+    #
+    #
+    # -------------------------------------------------------------------------------------------------------
     def On_Click_LW_button(self):
         ep_user_input = self.builder2.get_object("Nb_Epoques_Entry")
         NB_EPOQUES = int(ep_user_input.get())
@@ -176,7 +261,7 @@ class Application:
         n = self.selected_network
         temp_best_performance = n.best_performance
         if not n.train_status:
-            n.setup(self.selected_proto_sel)
+            n.setup()
             n.train_status = 1
         test = []
         vc = []
