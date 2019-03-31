@@ -261,7 +261,7 @@ class Application:
         n = self.selected_network
         temp_best_performance = n.best_performance
         if not n.train_status:
-            n.setup()
+            n.setup(self.selected_proto_sel)
             n.train_status = 1
         test = []
         vc = []
