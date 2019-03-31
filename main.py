@@ -1,4 +1,4 @@
-# ELE767 Lab 2
+# ELE767 Lab 3
 
 from input_data import *
 
