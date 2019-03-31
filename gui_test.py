@@ -1,8 +1,11 @@
 import pickle
-import tkinter as tk  # for python 3
+import tkinter as tk
 from tkinter import messagebox
 import pygubu
 import glob
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 from LVQ.neural_net import *
 
@@ -13,7 +16,7 @@ class Application:
         self.net_List = []
         self.builder = builder = pygubu.Builder()
         builder.add_from_file('Net_Ui1.ui')
-
+        self.root = master
         self.builder2 = pygubu.Builder()
         self.builder2.add_from_file('Net_Ui1.ui')
         self.frame_3 = None
@@ -107,23 +110,27 @@ class Application:
         self.net_List.pop(select[0])
         self.networks_listbox.delete(select)
     def on_save_network_click(self):
-        pickle.dump(self.selected_network, open(self.n.name + ".pkl", "wb"))
+        pickle.dump(self.selected_network, open(self.selected_network.name + ".pkl", "wb"))
         pos = self.networks_listbox.curselection()
         self.networks_listbox.delete(pos)
-        self.networks_listbox.insert(pos, self.n.name + "  (saved)")
+        self.networks_listbox.insert(pos, self.selected_network.name + "  (saved)")
     def on_load_network_click(self):
         self.builder2 = pygubu.Builder()
         self.builder2.add_from_file('Net_Ui1.ui')
         top3 = tk.Toplevel(self.mainwindow)
-
-        self.selected_acti_type = None
-        self.selected_nb_entry = None
-        file_list = glob.glob1(__path__[0],'*.pkl')
+        file_list = glob.glob1(".", '*.pkl')
         self.frame_3 = self.builder2.get_object('Load_Window', top3)
+        self.builder2.connect_callbacks(self)
         cbox = self.builder2.get_object('load_combobox')
         cbox['values'] = file_list
     def lw_load_button_click(self):
-        k=2
+        cbox = self.builder2.get_object('load_combobox')
+        k= cbox.get()
+        with open(cbox.get(), 'rb') as pickle_file:
+            net = pickle.load(pickle_file)
+        self.net_List.append(net)
+        self.networks_listbox.insert(tk.END, net.name + "  (Loaded)")
+
 
     def on_click_learn_button(self):
         NB_EPOQUES = 10
@@ -138,11 +145,34 @@ class Application:
             x.append(n.test_train())
             vc.append(n.vc_test())
             test.append(n.test())
+            self.draw_graph(self.builder2.get_object('Frame_13'), x,vc,test)
+            self.root.update()
 
         print('Train results : ', x)
         print('VC_results : ', vc)
         print('Test_results : ', test)
+    def on_click_test_button(self):
+        n = self.selected_network
+        n.test()
+    def draw_graph(self,frame, train_error_values, vc_error_values, test_error_values):
+        fig = plt.figure(1)
+        plt.ion()
+        t = list(range(len(train_error_values)))
+        x1 = train_error_values
+        x2 = vc_error_values
+        x3 = test_error_values
+        fig.clear()
+        plt.plot(t, x1, marker='', color='skyblue', label="learning")
+        plt.plot(t, x2, marker='', color='red', label="vc")
+        plt.plot(t, x3, marker='', color='green', label="test")
+        plt.xlabel("nb d'époques")
+        plt.ylabel("% de réussite")
+        plt.legend()
 
+        canvas = FigureCanvasTkAgg(fig, master=frame)
+        plot_widget = canvas.get_tk_widget()
+
+        plot_widget.grid(row=0, column=0)
 
 if __name__ == '__main__':
     root = tk.Tk()

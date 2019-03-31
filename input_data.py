@@ -2,7 +2,7 @@
 import random
 import math
 import numpy
-from Defines import *
+from LVQ.Defines import *
 
 nb2output = {0.0: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              1.0: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -225,10 +225,10 @@ def choose_prototype(filtered_data, k, method):
             print(loop)
     return prototypes
 
-data = readfile('data_train.csv', STATIC_60)
-prot = choose_prototype(data, int(input("k= ")), 3)
-print(prot)
-print(len(data))
+#data = readfile('data_train.csv', STATIC_60)
+#prot = choose_prototype(data, int(input("k= ")), 3)
+#print(prot)
+#print(len(data))
 
 
 # k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
