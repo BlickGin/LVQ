@@ -30,8 +30,12 @@ except:
 #                   7.  on_save_network_click (evenement, boutton)
 #                   8.  on_load_network_click (evenement, boutton)
 #                   9.  on_click_learn_button (evenement, boutton)
-#                   10. On_Click_LW_button (evenement, boutton fenêtre popup)
-#                   11.
+#                   10. On_Click_LW_button (evenement, boutton fenêtre popup, apprentissage)
+#                   11. on_click_test_button (evenement, boutton)
+#                   12. on_click_load_w (evenement, boutton)
+#                   13. on_click_export_button (evenement, boutton)
+#                   14. draw_graph (création du graphique)
+#
 # ----------------------------------------------------------------------------------------------------------
 
 class Application:
@@ -54,8 +58,15 @@ class Application:
         self.selected_network_filename = ""
         self.selected_network = None
         self.selected_nb_entry = STATIC_40
-        self.selected_proto_sel = 10
+        self.selected_proto_sel = 1
 
+        # ---------------------------------------------- curselect -------------------------------------------------
+        #
+        #
+        #
+        #
+        #
+        # ----------------------------------------------------------------------------------------------------------
         def curselect(event):
             widget = event.widget
             selection = widget.curselection()
@@ -67,11 +78,17 @@ class Application:
                 car = "STATIC " + car[2:]
             else:
                 car = "STATIC + DYNAMIC " + car[2:]
+            if self.selected_proto_sel == 1 :
+                car2 = "FIRST_K"
+            elif self.selected_proto_sel == 2:
+                car2 = "ARITH_MEAN"
+            elif self.selected_proto_sel == 3:
+                car2 = "RANDOM_W"
 
             txt = "Nom : " + self.selected_network.name + \
                                         "\n\rNombre de prototype : " + str(self.selected_network.nb_of_prototypes) + \
                                         "\n\rDonnées d'entrée : " + car +\
-                                        "\n\rInitialisation :" +\
+                                        "\n\rInitialisation : " + car2 +\
                                         "\n\rMeilleur résultat (test) : " + str(self.selected_network.best_performance)
 
             self.netinfos_label.config(text=txt)
