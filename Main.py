@@ -27,8 +27,10 @@ except:
 #                   4.  on_selected_entry(evenement, menu)
 #                   5.  on_click_nnw_cancel_button (evenement, boutton fenetre popup)
 #                   6.  on_delete_network_click (evenement, boutton)
-#                   7.
-#
+#                   7.  on_save_network_click (evenement, boutton)
+#                   8.  on_load_network_click (evenement, boutton)
+#                   9.  on_click_learn_button (evenement, boutton)
+#                   10. 
 #
 # ----------------------------------------------------------------------------------------------------------
 
