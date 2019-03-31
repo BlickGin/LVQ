@@ -6,6 +6,7 @@ import glob
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from copy import deepcopy
 
 from LVQ.neural_net import *
 
@@ -47,7 +48,8 @@ class Application:
             txt = "Nom : " + self.selected_network.name + \
                                         "\n\rNombre de prototype : " + str(self.selected_network.nb_of_prototypes) + \
                                         "\n\rDonnées d'entrée : " + car +\
-                                        "\n\rInitialisation :"
+                                        "\n\rInitialisation :" +\
+                                        "\n\rMeilleur résultat (test) : " + str(self.selected_network.best_performance)
 
             self.netinfos_label.config(text=txt)
             # percent_hit = net.vc_test()
@@ -125,35 +127,55 @@ class Application:
         cbox['values'] = file_list
     def lw_load_button_click(self):
         cbox = self.builder2.get_object('load_combobox')
-        k= cbox.get()
         with open(cbox.get(), 'rb') as pickle_file:
             net = pickle.load(pickle_file)
         self.net_List.append(net)
         self.networks_listbox.insert(tk.END, net.name + "  (Loaded)")
-
-
+        self.frame_3.master.destroy()
     def on_click_learn_button(self):
-        NB_EPOQUES = 10
+        self.builder2 = pygubu.Builder()
+        self.builder2.add_from_file('Net_Ui1.ui')
+        top3 = tk.Toplevel(self.mainwindow)
+        self.frame_3 = self.builder2.get_object('Learn_Window', top3)
+        self.builder2.connect_callbacks(self)
+    def On_Click_LW_button(self):
+        ep_user_input = self.builder2.get_object("Nb_Epoques_Entry")
+        NB_EPOQUES = int(ep_user_input.get())
+        app_user_input = self.builder2.get_object("Taux_App_Entry")
+        alpha = float(app_user_input.get())
         n = self.selected_network
-        n.setup()
+        temp_best_performance = n.best_performance
+        if not n.train_status:
+            n.setup()
+            n.train_status = 1
         test = []
         vc = []
         x = []
         for i in range(NB_EPOQUES):
-            n.learning_rate = 0.2 - (0.2 / NB_EPOQUES) * i
+            n.learning_rate = alpha - (alpha / NB_EPOQUES) * i
             n.train()
             x.append(n.test_train())
             vc.append(n.vc_test())
             test.append(n.test())
             self.draw_graph(self.builder2.get_object('Frame_13'), x,vc,test)
             self.root.update()
-
+            if test[i] > temp_best_performance:
+                temp_best_performance = test[i]
+                n.best_w_matrix = deepcopy(n.w_matrix)
+        self.frame_3.master.destroy()
+        n.best_performance = temp_best_performance
+        self.selected_network = n
         print('Train results : ', x)
         print('VC_results : ', vc)
         print('Test_results : ', test)
+        print("Meilleur performance : ", n.best_performance, " %")
     def on_click_test_button(self):
         n = self.selected_network
         n.test()
+    def on_click_load_w(self):
+        self.selected_network.w_matrix = self.selected_network.best_w_matrix
+    def on_click_export_button(self):
+        numpy.savetxt(self.selected_network.name + ".csv", self.selected_network.best_w_matrix, delimiter=",")
     def draw_graph(self,frame, train_error_values, vc_error_values, test_error_values):
         fig = plt.figure(1)
         plt.ion()
