@@ -1,7 +1,9 @@
 import numpy as np
 from LVQ.Defines import *
-from LVQ.input_data import *
-
+try:
+    from input_data import *
+except:
+    from LVQ.input_data import *
 
 class neural_net():
     def __init__(self, nb_proto, input_car, base_learning_rate=0.1):
