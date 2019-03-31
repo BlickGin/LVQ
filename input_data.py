@@ -242,6 +242,9 @@ def choose_prototype(filtered_data, k, method):
             print(loop)
     return prototypes_sorted
 
+
+
+
 # data = readfile('data_train.csv', STATIC_60)
 # prot = choose_prototype(data, int(input("k= ")), 3)
 # prot = numpy.asmatrix(prot)
