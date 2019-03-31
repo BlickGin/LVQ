@@ -30,8 +30,8 @@ except:
 #                   7.  on_save_network_click (evenement, boutton)
 #                   8.  on_load_network_click (evenement, boutton)
 #                   9.  on_click_learn_button (evenement, boutton)
-#                   10. 
-#
+#                   10. On_Click_LW_button (evenement, boutton fenêtre popup)
+#                   11.
 # ----------------------------------------------------------------------------------------------------------
 
 class Application:
@@ -156,11 +156,15 @@ class Application:
         self.networks_listbox.insert(tk.END, net.name + "  (Loaded)")
         self.frame_3.master.destroy()
     def on_click_learn_button(self):
-        self.builder2 = pygubu.Builder()
-        self.builder2.add_from_file('Net_Ui1.ui')
-        top3 = tk.Toplevel(self.mainwindow)
-        self.frame_3 = self.builder2.get_object('Learn_Window', top3)
-        self.builder2.connect_callbacks(self)
+        try:
+            self.selected_network.name
+            self.builder2 = pygubu.Builder()
+            self.builder2.add_from_file('Net_Ui1.ui')
+            top3 = tk.Toplevel(self.mainwindow)
+            self.frame_3 = self.builder2.get_object('Learn_Window', top3)
+            self.builder2.connect_callbacks(self)
+        except:
+            tk.messagebox.showinfo("Error", "Please select a network from the network list")
     def On_Click_LW_button(self):
         ep_user_input = self.builder2.get_object("Nb_Epoques_Entry")
         NB_EPOQUES = int(ep_user_input.get())
