@@ -390,6 +390,48 @@ for each class</property>
         </layout>
       </object>
     </child>
+    <child>
+      <object class="ttk.Menubutton" id="Initialisation">
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">7</property>
+        </layout>
+        <child>
+          <object class="tk.Menu" id="Menu_init">
+            <property name="postcommand">on_selected_method</property>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="method_1">
+                <property name="command_id_arg">false</property>
+                <property name="label" translatable="yes">First_K</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="method_2">
+                <property name="command_id_arg">false</property>
+                <property name="label" translatable="yes">ARITH_MEAN</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Radiobutton" id="method_3">
+                <property name="command_id_arg">false</property>
+                <property name="label" translatable="yes">RANDOM_K_PICK</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="Init weights">
+        <property name="text" translatable="yes">Init weights</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">6</property>
+        </layout>
+      </object>
+    </child>
   </object>
   <object class="ttk.Frame" id="Load_Window">
     <property name="height">200</property>
