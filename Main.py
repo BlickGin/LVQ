@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from copy import deepcopy
 
-from LVQ.neural_net import *
-
+try:
+    from neural_net import *
+except:
+    from LVQ.neural_net import *
 
 #
 #

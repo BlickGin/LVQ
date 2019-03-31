@@ -2,7 +2,10 @@
 import random
 import math
 import numpy
-from LVQ.Defines import *
+try:
+    from Defines import *
+except:
+    from LVQ.Defines import *
 
 nb2output = {0.0: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
              1.0: [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
