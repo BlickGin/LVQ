@@ -8,9 +8,13 @@ class neural_net():
         self.nb_epoques = 0
         self.input_matrix = []
         self.input_caracteristics = input_car
+        self.input_car_text = "STATIC_40"
         self.nb_of_prototypes = nb_proto
-        self.v_erreur = np.zeros(nb_proto)
+        self.v_erreur = np.zeros(int(nb_proto))
         self.learning_rate = base_learning_rate
+        self.name = "Empty"
+        self.train_status = 0
+        self.best_performance = 0
 
         if input_car == STATIC_40:
             self.training_data = np.asmatrix([1340, 12 * 40])
@@ -42,7 +46,7 @@ class neural_net():
             self.w_matrix = np.asmatrix(np.random.rand(self.nb_of_prototypes*10, 26 * 60))
             self.vc_data = np.asmatrix([120, 26 * 60])
             self.test_data = np.asmatrix([1340, 26 * 60])
-
+        self.best_w_matrix = self.w_matrix
     def setup(self):
         data = readfile('data_train.csv', self.input_caracteristics)
         vc_data = readfile('data_vc.csv', self.input_caracteristics)

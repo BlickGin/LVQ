@@ -25,7 +25,7 @@
             <layout>
               <property name="column">0</property>
               <property name="padx">20</property>
-              <property name="pady">20</property>
+              <property name="pady">0</property>
               <property name="propagate">True</property>
               <property name="row">0</property>
             </layout>
@@ -43,10 +43,10 @@
             </child>
             <child>
               <object class="ttk.Button" id="Import_Network">
-                <property name="command">on_import_network_click</property>
+                <property name="command">on_delete_network_click</property>
                 <property name="compound">top</property>
                 <property name="takefocus">true</property>
-                <property name="text" translatable="yes">Import Network</property>
+                <property name="text" translatable="yes">Delete Network</property>
                 <property name="width">15</property>
                 <layout>
                   <property name="column">0</property>
@@ -57,13 +57,25 @@
             </child>
             <child>
               <object class="ttk.Button" id="Export_Network">
-                <property name="command">on_export_network_click</property>
-                <property name="text" translatable="yes">Export Network</property>
+                <property name="command">on_save_network_click</property>
+                <property name="text" translatable="yes">Save Network</property>
                 <property name="width">15</property>
                 <layout>
                   <property name="column">0</property>
                   <property name="propagate">True</property>
                   <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Load_Network">
+                <property name="command">on_load_network_click</property>
+                <property name="text" translatable="yes">Load_Network</property>
+                <property name="width">15</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">3</property>
                 </layout>
               </object>
             </child>
@@ -126,20 +138,19 @@
     </child>
     <child>
       <object class="tk.Frame" id="Frame_13">
-        <property name="height">200</property>
-        <property name="width">200</property>
+        <property name="height">0</property>
+        <property name="width">0</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">2</property>
-          <property name="sticky">w</property>
+          <property name="sticky">nw</property>
         </layout>
       </object>
     </child>
     <child>
       <object class="ttk.Frame" id="Frame_2">
         <property name="height">200</property>
-        <property name="padding">30</property>
         <property name="relief">flat</property>
         <property name="width">200</property>
         <layout>
@@ -176,13 +187,26 @@
         </child>
         <child>
           <object class="ttk.Button" id="export_data">
-            <property name="text" translatable="yes">Export Graph to CSV</property>
+            <property name="command">on_click_export_button</property>
+            <property name="text" translatable="yes">Export weights to CSV</property>
             <property name="width">20</property>
             <layout>
               <property name="column">0</property>
               <property name="pady">2</property>
               <property name="propagate">True</property>
               <property name="row">2</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="Load_best_W_config">
+            <property name="command">on_click_load_w</property>
+            <property name="text" translatable="yes">Load best weights config</property>
+            <property name="width">20</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
             </layout>
           </object>
         </child>
@@ -274,7 +298,7 @@ for each class</property>
     </child>
     <child>
       <object class="ttk.Button" id="ok">
-        <property name="command">on_ok_click</property>
+        <property name="command">on_click_nnw_ok_button</property>
         <property name="text" translatable="yes">OK</property>
         <layout>
           <property name="column">1</property>
@@ -352,6 +376,114 @@ for each class</property>
             </child>
           </object>
         </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="Cancel">
+        <property name="command">on_click_nnw_cancel_button</property>
+        <property name="text" translatable="yes">Cancel</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">8</property>
+          <property name="sticky">e</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+  <object class="ttk.Frame" id="Load_Window">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nw</property>
+    </layout>
+    <child>
+      <object class="ttk.Combobox" id="load_combobox">
+        <property name="height">10</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="padx">10</property>
+          <property name="pady">20</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="Load">
+        <property name="command">lw_load_button_click</property>
+        <property name="text" translatable="yes">Load</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+  <object class="ttk.Frame" id="Learn_Window">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Label" id="Nb_d'époques">
+        <property name="text" translatable="yes">Nombre d'époques</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Entry" id="Nb_Epoques_Entry">
+        <property name="text" translatable="yes">10</property>
+        <property name="width">20</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="padx">30</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="Taux_Apprentissage">
+        <property name="text" translatable="yes">Taux d'apprentissage initial</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">2</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Entry" id="Taux_App_Entry">
+        <property name="text" translatable="yes">0.2</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">3</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="On_Click_LW_button">
+        <property name="command">On_Click_LW_button</property>
+        <property name="text" translatable="yes">Learn</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="pady">40</property>
+          <property name="propagate">True</property>
+          <property name="row">4</property>
+        </layout>
       </object>
     </child>
   </object>
