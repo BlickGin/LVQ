@@ -3,7 +3,6 @@ import tkinter as tk
 from tkinter import messagebox
 import pygubu
 import glob
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from copy import deepcopy
@@ -13,13 +12,25 @@ try:
 except:
     from LVQ.neural_net import *
 
+# ------------------------------------------------- Application Class --------------------------------------
 #
 #
+#   Cette class contrôle le GUI et l'ensemble des événement liés à celui-ci. Le Gui est raffraichit de
+#   de façon cyclique dans le code du main à le fin de ce fichier. Il est à noté que le fichier .ui dans
+#   le dossier est un XML qui contient les configurations du GUI. Ce GUI a été créé par le module pygubu.
+#
+#           Les fonctions suivantes sont incluses dans la Class :
+#
+#                   1.  Curselect (evenement)
+#                   2.  on_new_network_click (evenement, boutton)
+#                   3.  on_click_nnw_ok_button (evenement, boutton fenetre popup)
+#                   4.  on_selected_entry(evenement, menu)
+#                   5.  on_click_nnw_cancel_button (evenement, boutton fenetre popup)
+#                   6.  on_delete_network_click (evenement, boutton)
+#                   7.
 #
 #
-#
-#
-#
+# ----------------------------------------------------------------------------------------------------------
 
 class Application:
     def __init__(self, master):

@@ -1,5 +1,4 @@
 import numpy as np
-from LVQ.Defines import *
 try:
     from input_data import *
 except:
