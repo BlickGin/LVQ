@@ -11,6 +11,14 @@ from copy import deepcopy
 from LVQ.neural_net import *
 
 
+#
+#
+#
+#
+#
+#
+#
+
 class Application:
     def __init__(self, master):
 
