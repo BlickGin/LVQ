@@ -48,16 +48,16 @@ class neural_net():
             self.vc_data = np.asmatrix([120, 26 * 60])
             self.test_data = np.asmatrix([1340, 26 * 60])
         self.best_w_matrix = self.w_matrix
-    def setup(self):
+    def setup(self, selected_proto_sel):
         data = readfile('data_train.csv', self.input_caracteristics)
         vc_data = readfile('data_vc.csv', self.input_caracteristics)
         test_data = readfile('data_test.csv', self.input_caracteristics)
-        data = np.asmatrix(data)
-        vc_data = np.asmatrix(vc_data)
+        self.w_matrix = np.asmatrix(choose_prototype(data, self.nb_of_prototypes, selected_proto_sel))
         test_data = np.asmatrix(test_data)
-        self.training_data = data
-        self.vc_data = vc_data
-        self.test_data = test_data
+
+        self.training_data = np.asmatrix(data)
+        self.vc_data = np.asmatrix(vc_data)
+        self.test_data = np.asmatrix(test_data)
 
 
     def train(self):

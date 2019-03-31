@@ -30,11 +30,7 @@ except:
 #                   7.  on_save_network_click (evenement, boutton)
 #                   8.  on_load_network_click (evenement, boutton)
 #                   9.  on_click_learn_button (evenement, boutton)
-#                   10. On_Click_LW_button (evenement, boutton fenêtre popup, apprentissage)
-#                   11. on_click_test_button (evenement, boutton)
-#                   12. on_click_load_w (evenement, boutton)
-#                   13. on_click_export_button (evenement, boutton)
-#                   14. draw_graph (création du graphique)
+#                   10. 
 #
 # ----------------------------------------------------------------------------------------------------------
 
@@ -58,15 +54,8 @@ class Application:
         self.selected_network_filename = ""
         self.selected_network = None
         self.selected_nb_entry = STATIC_40
-        self.selected_proto_sel = 1
+        self.selected_proto_sel = FIRST_K
 
-        # ---------------------------------------------- curselect -------------------------------------------------
-        #
-        #
-        #
-        #
-        #
-        # ----------------------------------------------------------------------------------------------------------
         def curselect(event):
             widget = event.widget
             selection = widget.curselection()
@@ -78,17 +67,11 @@ class Application:
                 car = "STATIC " + car[2:]
             else:
                 car = "STATIC + DYNAMIC " + car[2:]
-            if self.selected_proto_sel == 1 :
-                car2 = "FIRST_K"
-            elif self.selected_proto_sel == 2:
-                car2 = "ARITH_MEAN"
-            elif self.selected_proto_sel == 3:
-                car2 = "RANDOM_W"
 
             txt = "Nom : " + self.selected_network.name + \
                                         "\n\rNombre de prototype : " + str(self.selected_network.nb_of_prototypes) + \
                                         "\n\rDonnées d'entrée : " + car +\
-                                        "\n\rInitialisation : " + car2 +\
+                                        "\n\rInitialisation :" +\
                                         "\n\rMeilleur résultat (test) : " + str(self.selected_network.best_performance)
 
             self.netinfos_label.config(text=txt)
@@ -173,15 +156,18 @@ class Application:
         self.networks_listbox.insert(tk.END, net.name + "  (Loaded)")
         self.frame_3.master.destroy()
     def on_click_learn_button(self):
-        try:
-            self.selected_network.name
-            self.builder2 = pygubu.Builder()
-            self.builder2.add_from_file('Net_Ui1.ui')
-            top3 = tk.Toplevel(self.mainwindow)
-            self.frame_3 = self.builder2.get_object('Learn_Window', top3)
-            self.builder2.connect_callbacks(self)
-        except:
-            tk.messagebox.showinfo("Error", "Please select a network from the network list")
+        self.builder2 = pygubu.Builder()
+        self.builder2.add_from_file('Net_Ui1.ui')
+        top3 = tk.Toplevel(self.mainwindow)
+        self.frame_3 = self.builder2.get_object('Learn_Window', top3)
+        self.builder2.connect_callbacks(self)
+    def on_selected_method(self, selection):
+            if selection == 'method_1':
+                self.selected_proto_sel = FIRST_K
+            elif selection == 'method_2':
+                self.selected_proto_sel = ARITH_MEAN
+            elif selection == 'method_3':
+                self.selected_proto_sel = RANDOM_K_PICK
     def On_Click_LW_button(self):
         ep_user_input = self.builder2.get_object("Nb_Epoques_Entry")
         NB_EPOQUES = int(ep_user_input.get())
@@ -190,7 +176,7 @@ class Application:
         n = self.selected_network
         temp_best_performance = n.best_performance
         if not n.train_status:
-            n.setup()
+            n.setup(self.selected_proto_sel)
             n.train_status = 1
         test = []
         vc = []
