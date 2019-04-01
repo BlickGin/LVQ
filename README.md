@@ -8,10 +8,19 @@ sont des chiffres de 0 à 9 qui doivent être traités par le programme et ident
 
 ### LVQ
 
+La LVQ utilise un réseau du type compétitif qui compare des points dans un espace multidimensionnel. La méthode de comparaison mesure la distance entre les deux en calculant la norme du vecteur qui lie les deux points. Le réseau est di compétitif, car seulement une partie des vecteurs de poids (Points) seront utilisé lors de la detection des sons. Les autres seront ce seront trop éloigné de la cible pour être jugé correct. La LVQ utilise donc la séquence suivante pour faire son apprentissage : 
+
+    1. On initialise les K vecteur de poids pour les M classe à déterminer.
+    2. On trouve le vecteur de poids le plus près d'une donnée tirée au hasard.
+    3. Si le vecteur est dans la même classe que la donnée alors on approche le vecteur de la donnée.
+    4. Dans le cas contraire on éloigne le vecteur de la donnée.
+    5. On répète le processus (2) à (4) jusqu'à la condition d'arrêt de l'apprentissage
+
 
 
 ### Validation 
 
+Pour valider le fonctionnement de l'algorithme on utilise des données de test représentative des sons. Ces données sont différentes de celle de l'entrainement. Si l'algorithme a convergé on va remarqué une convergence sur les données de test.
 
 ## Obtention du programme
 
@@ -60,7 +69,7 @@ Le script Install_Package.bat utilise l'invite de commande windows pour installe
 
 ## Déploiment
 
-Pour lancer le programme, il suffit de lancer le fichier Gui.py dans le dossier ou le .zip a été extrait.Puis, de cliquer sur l'option New Network, selectionner le nombre de couches cachées, la configuration du vecteur d'entrée et le type de fonction d'activation. Une fois cela fait dans Network list selectionner Network_2.pkl, puis appuyer sur Start_learning pour commencer l'entrainement.Ensuite, attendez durant quelques heures (Notre programme est vraiment TRÈS lent) et une fois l'entrainement terminé appuyer sur le bouton Start Testing pour vérifier le performance du réseau avec les données de test.
+Pour lancer le programme, il suffit de lancer le fichier Main.py. Puis d'appuyer le boutton de création d'un noveau réseau dans la GUI.
 
 ## Auteurs
 
