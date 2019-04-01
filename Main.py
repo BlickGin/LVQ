@@ -315,7 +315,7 @@ class Application:
             self.selected_proto_sel = ARITH_MEAN
         elif selection == 'method_3':
             self.selected_proto_sel = RANDOM_K_PICK
-            
+
 def draw_graph(frame, train_error_values, vc_error_values, test_error_values):
     fig = plt.figure(1)
     plt.ion()
