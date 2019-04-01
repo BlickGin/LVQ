@@ -304,11 +304,29 @@ class Application:
         n.add_test(test)
         print("Meilleur performance : ", n.best_performance, " %")
 
+    # -------------------- On_Click_test_button ---------------------------------------------------------------
+    #
+    #           Test les performance du réseau sur les donnés de test.
+    #
+    # -------------------------------------------------------------------------------------------------------
+
     def on_click_test_button(self):
         n = self.selected_network
         n.Test()
+
+    # -------------------- On_Click_load_w ---------------------------------------------------------------
+    #
+    #          Load la matrice avec la plus haute performance sur les données de test
+    #
+    # -------------------------------------------------------------------------------------------------------
     def on_click_load_w(self):
         self.selected_network.w_matrix = self.selected_network.best_w_matrix
+
+    # -------------------- On_Click_export_button ---------------------------------------------------------------
+    #
+    #          Crée un fichier CSV de la mmatrice de poids ayant donné les meilleurs résultats
+    #
+    # -------------------------------------------------------------------------------------------------------
     def on_click_export_button(self):
         numpy.savetxt(self.selected_network.name + ".csv", self.selected_network.best_w_matrix, delimiter=",")
 
