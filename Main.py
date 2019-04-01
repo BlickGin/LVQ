@@ -289,10 +289,13 @@ class Application:
             if test[i] > temp_best_performance:
                 temp_best_performance = test[i]
                 n.best_w_matrix = deepcopy(n.w_matrix)
-
+        # DESTRUCTION du popup
         self.frame_3.master.destroy()
+
         n.best_performance = temp_best_performance
+
         self.selected_network = n
+        # ajout des indicateurs de performance
         print('Train results : ', x)
         n.add_x(x)
         print('VC_results : ', vc)
@@ -300,11 +303,30 @@ class Application:
         print('Test_results : ', test)
         n.add_test(test)
         print("Meilleur performance : ", n.best_performance, " %")
+
+    # -------------------- On_Click_test_button ---------------------------------------------------------------
+    #
+    #           Test les performance du réseau sur les donnés de test.
+    #
+    # -------------------------------------------------------------------------------------------------------
+
     def on_click_test_button(self):
         n = self.selected_network
         n.Test()
+
+    # -------------------- On_Click_load_w ---------------------------------------------------------------
+    #
+    #          Load la matrice avec la plus haute performance sur les données de test
+    #
+    # -------------------------------------------------------------------------------------------------------
     def on_click_load_w(self):
         self.selected_network.w_matrix = self.selected_network.best_w_matrix
+
+    # -------------------- On_Click_export_button ---------------------------------------------------------------
+    #
+    #          Crée un fichier CSV de la mmatrice de poids ayant donné les meilleurs résultats
+    #
+    # -------------------------------------------------------------------------------------------------------
     def on_click_export_button(self):
         numpy.savetxt(self.selected_network.name + ".csv", self.selected_network.best_w_matrix, delimiter=",")
 
