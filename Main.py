@@ -274,7 +274,7 @@ class Application:
         vc = []
         x = []
 
-
+        # on entraine le réseau, on obtient les résultats et on diminue le taux d'apprentissage
         for i in range(NB_EPOQUES):
             n.learning_rate = alpha - (alpha / NB_EPOQUES) * i
             n.train()
@@ -282,12 +282,14 @@ class Application:
             vc.append(n.vc_test())
             test.append(n.Test())
 
-
+            # Mise à jour du graphique
             draw_graph(self.builder2.get_object('Frame_13'), x,  vc,test)
             self.root.update()
+
             if test[i] > temp_best_performance:
                 temp_best_performance = test[i]
                 n.best_w_matrix = deepcopy(n.w_matrix)
+
         self.frame_3.master.destroy()
         n.best_performance = temp_best_performance
         self.selected_network = n
@@ -305,6 +307,15 @@ class Application:
         self.selected_network.w_matrix = self.selected_network.best_w_matrix
     def on_click_export_button(self):
         numpy.savetxt(self.selected_network.name + ".csv", self.selected_network.best_w_matrix, delimiter=",")
+
+    def on_selected_method(self, selection):
+        if selection == 'method_1':
+            self.selected_proto_sel = FIRST_K
+        elif selection == 'method_2':
+            self.selected_proto_sel = ARITH_MEAN
+        elif selection == 'method_3':
+            self.selected_proto_sel = RANDOM_K_PICK
+            
 def draw_graph(frame, train_error_values, vc_error_values, test_error_values):
     fig = plt.figure(1)
     plt.ion()
