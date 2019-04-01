@@ -16,7 +16,9 @@ class neural_net():
         self.name = "Empty"
         self.train_status = 0
         self.best_performance = 0
-
+        self.x = []
+        self.vc = []
+        self.test = []
         if input_car == STATIC_40:
             self.training_data = np.asmatrix([1340, 12 * 40])
             self.vc_data = np.asmatrix([120, 12 * 40])
@@ -152,7 +154,7 @@ class neural_net():
         return nb_hit / 120 * 100
 
 
-    def test(self):
+    def Test(self):
         np.random.shuffle(self.test_data)
         x_matrix = np.asmatrix(self.test_data)
         desired_values = np.asarray(x_matrix[:, 0])
@@ -174,3 +176,10 @@ class neural_net():
             q = q + 1
         print("percent_hit (test): ", nb_hit / 780 * 100)
         return nb_hit / 780 * 100
+
+    def add_x(self, x):
+        self.x = self.x + x
+    def add_vc(self, vc):
+        self.vc = self.vc + vc
+    def add_test(self,test):
+        self.test = self.test +test

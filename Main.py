@@ -60,6 +60,7 @@ class Application:
         self.selected_nb_entry = STATIC_40
         self.selected_proto_sel = 1
 
+
         # ---------------------------------------------- curselect -------------------------------------------------
         #
         #      La fonction curselect gère la selection des networks dans la liste. Elle définie un network
@@ -96,7 +97,7 @@ class Application:
 
             self.netinfos_label.config(text=txt)
             # percent_hit = net.vc_test()
-            # draw_graph(frame_13, 1)
+            draw_graph(self.builder2.get_object('Frame_13'), self.selected_network.x, self.selected_network.vc, self.selected_network.test)
 
         self.networks_listbox.bind('<<ListboxSelect>>', curselect)
 
@@ -250,29 +251,39 @@ class Application:
     # -------------------- On_Click_LW_button ---------------------------------------------------------------
     #
     #       Le boutton learn de la fenêtre popup prend les valeurs du NB d'époques et du taux d'apprentissage
-    #
+    #       pour initialiser le réseau.
     #
     # -------------------------------------------------------------------------------------------------------
     def On_Click_LW_button(self):
+        # Lecture des paramètres dans le GUI
         ep_user_input = self.builder2.get_object("Nb_Epoques_Entry")
         NB_EPOQUES = int(ep_user_input.get())
         app_user_input = self.builder2.get_object("Taux_App_Entry")
         alpha = float(app_user_input.get())
+
+        # Le réseau à entrainer est le réseau sélectionner dans le GUI
         n = self.selected_network
+
         temp_best_performance = n.best_performance
+        # Pour pouvoir réentrainer le réseau si on veut
         if not n.train_status:
             n.setup(self.selected_proto_sel)
             n.train_status = 1
+
         test = []
         vc = []
         x = []
+
+
         for i in range(NB_EPOQUES):
             n.learning_rate = alpha - (alpha / NB_EPOQUES) * i
             n.train()
             x.append(n.test_train())
             vc.append(n.vc_test())
-            test.append(n.test())
-            self.draw_graph(self.builder2.get_object('Frame_13'), x,vc,test)
+            test.append(n.Test())
+
+
+            draw_graph(self.builder2.get_object('Frame_13'), x,  vc,test)
             self.root.update()
             if test[i] > temp_best_performance:
                 temp_best_performance = test[i]
@@ -281,35 +292,38 @@ class Application:
         n.best_performance = temp_best_performance
         self.selected_network = n
         print('Train results : ', x)
+        n.add_x(x)
         print('VC_results : ', vc)
+        n.add_vc(vc)
         print('Test_results : ', test)
+        n.add_test(test)
         print("Meilleur performance : ", n.best_performance, " %")
     def on_click_test_button(self):
         n = self.selected_network
-        n.test()
+        n.Test()
     def on_click_load_w(self):
         self.selected_network.w_matrix = self.selected_network.best_w_matrix
     def on_click_export_button(self):
         numpy.savetxt(self.selected_network.name + ".csv", self.selected_network.best_w_matrix, delimiter=",")
-    def draw_graph(self,frame, train_error_values, vc_error_values, test_error_values):
-        fig = plt.figure(1)
-        plt.ion()
-        t = list(range(len(train_error_values)))
-        x1 = train_error_values
-        x2 = vc_error_values
-        x3 = test_error_values
-        fig.clear()
-        plt.plot(t, x1, marker='', color='skyblue', label="learning")
-        plt.plot(t, x2, marker='', color='red', label="vc")
-        plt.plot(t, x3, marker='', color='green', label="test")
-        plt.xlabel("nb d'époques")
-        plt.ylabel("% de réussite")
-        plt.legend()
+def draw_graph(frame, train_error_values, vc_error_values, test_error_values):
+    fig = plt.figure(1)
+    plt.ion()
+    t = list(range(len(train_error_values)))
+    x1 = train_error_values
+    x2 = vc_error_values
+    x3 = test_error_values
+    fig.clear()
+    plt.plot(t, x1, marker='', color='skyblue', label="learning")
+    plt.plot(t, x2, marker='', color='red', label="vc")
+    plt.plot(t, x3, marker='', color='green', label="test")
+    plt.xlabel("nb d'époques")
+    plt.ylabel("% de réussite")
+    plt.legend()
 
-        canvas = FigureCanvasTkAgg(fig, master=frame)
-        plot_widget = canvas.get_tk_widget()
+    canvas = FigureCanvasTkAgg(fig, master=frame)
+    plot_widget = canvas.get_tk_widget()
 
-        plot_widget.grid(row=0, column=0)
+    plot_widget.grid(row=0, column=0)
 
 if __name__ == '__main__':
     root = tk.Tk()

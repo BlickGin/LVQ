@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="ttk.Frame" id="Toplevel_2">
-    <property name="height">200</property>
-    <property name="width">200</property>
+    <property name="height">600</property>
+    <property name="width">400</property>
     <layout>
       <property name="column">0</property>
       <property name="propagate">True</property>
