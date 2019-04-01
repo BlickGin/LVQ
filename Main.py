@@ -289,10 +289,13 @@ class Application:
             if test[i] > temp_best_performance:
                 temp_best_performance = test[i]
                 n.best_w_matrix = deepcopy(n.w_matrix)
-
+        # DESTRUCTION du popup
         self.frame_3.master.destroy()
+
         n.best_performance = temp_best_performance
+
         self.selected_network = n
+        # ajout des indicateurs de performance
         print('Train results : ', x)
         n.add_x(x)
         print('VC_results : ', vc)
@@ -300,6 +303,7 @@ class Application:
         print('Test_results : ', test)
         n.add_test(test)
         print("Meilleur performance : ", n.best_performance, " %")
+
     def on_click_test_button(self):
         n = self.selected_network
         n.Test()
