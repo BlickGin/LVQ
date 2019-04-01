@@ -392,6 +392,7 @@ for each class</property>
     </child>
     <child>
       <object class="ttk.Menubutton" id="Initialisation">
+        <property name="direction">below</property>
         <property name="textvariable">string:method</property>
         <layout>
           <property name="column">0</property>
@@ -401,8 +402,10 @@ for each class</property>
         <child>
           <object class="tk.Menu" id="Menu_init">
             <property name="postcommand">on_selected_method</property>
+            <property name="tearoff">false</property>
             <child>
               <object class="tk.Menuitem.Radiobutton" id="method_1">
+                <property name="command">on_selected_method</property>
                 <property name="command_id_arg">true</property>
                 <property name="label" translatable="yes">First_K</property>
                 <property name="variable">string:method</property>
@@ -410,6 +413,7 @@ for each class</property>
             </child>
             <child>
               <object class="tk.Menuitem.Radiobutton" id="method_2">
+                <property name="command">on_selected_method</property>
                 <property name="command_id_arg">true</property>
                 <property name="label" translatable="yes">ARITH_MEAN</property>
                 <property name="variable">string:method</property>
@@ -417,6 +421,7 @@ for each class</property>
             </child>
             <child>
               <object class="tk.Menuitem.Radiobutton" id="method_3">
+                <property name="command">on_selected_method</property>
                 <property name="command_id_arg">true</property>
                 <property name="label" translatable="yes">RANDOM_K_PICK</property>
                 <property name="variable">string:method</property>
