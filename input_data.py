@@ -97,9 +97,7 @@ def controle_list(list,k):
 def choose_prototype(filtered_data, k, method):
     prototypes = []
     prototypes_sorted = []
-    if k > 20:
-        k = 20
-        print("K ne doit dépasser 20.")
+
     if method == FIRST_K:
         k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for i in filtered_data:
@@ -180,73 +178,17 @@ def choose_prototype(filtered_data, k, method):
         prototypes = numpy.ndarray.tolist(prototypes)
 
         for i in prototypes:
+            i.pop(0)
             for j in range(k):
-                i.pop(0)
-                prototypes_sorted.append(deepcopy(i))
+                prototypes_sorted.append(i)
 
-    if method == RANDOM_K_PICK:
-        k_counter = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        probabilityFactor = (1 - math.exp(-0.05*k)) *100
-        loop = 0
-        while controle_list(k_counter, k) == 1:
-            #print(loop)
-            loop += 1
-            for i in filtered_data:
-                if i[0] == 0 and k_counter[0] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    #print("index i: " + str(filtered_data.index(i)))
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[0] += 1
-                if i[0] == 1 and k_counter[1] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[1] += 1
-                if i[0] == 2 and k_counter[2] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[2] += 1
-                if i[0] == 3 and k_counter[3] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[3] += 1
-                if i[0] == 4 and k_counter[4] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[4] += 1
-                if i[0] == 5 and k_counter[5] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[5] += 1
-                if i[0] == 6 and k_counter[6] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[6] += 1
-                if i[0] == 7 and k_counter[7] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[7] += 1
-                if i[0] == 8 and k_counter[8] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[8] += 1
-                if i[0] == 9 and k_counter[9] < k and random.randint(1, 100) < probabilityFactor:
-                    prototypes.append(i)
-                    filtered_data.pop(filtered_data.index(i))
-                    k_counter[9] += 1
-            prototypes_sorted = []
-            for j in range(10):
-                for w in prototypes:
-                    if w[0] is j:
-                        w.pop(0)
-                        prototypes_sorted.append(deepcopy(w))
-            print(loop)
     return prototypes_sorted
 
 
 
 
 # data = readfile('data_train.csv', STATIC_60)
-# prot = choose_prototype(data, int(input("k= ")), 3)
+# prot = choose_prototype(data, int(input("k= ")), 2)
 # prot = numpy.asmatrix(prot)
 # print(prot)
 # print(len(data))
