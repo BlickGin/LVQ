@@ -96,9 +96,10 @@ class neural_net():
         vc_data = readfile('data_vc.csv', self.input_caracteristics)
         test_data = readfile('data_test.csv', self.input_caracteristics)
 
-        # la fonction choose_prototype initialise les matrices de poids.
-        self.w_matrix = np.asmatrix(choose_prototype(data, self.nb_of_prototypes, selected_proto_sel))
 
+        if selected_proto_sel < 3:
+            self.w_matrix = np.asmatrix(choose_prototype(data, self.nb_of_prototypes, selected_proto_sel))
+        test_data = np.asmatrix(test_data)
 
         self.training_data = np.asmatrix(data)
         self.vc_data = np.asmatrix(vc_data)
