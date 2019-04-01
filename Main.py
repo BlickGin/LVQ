@@ -209,10 +209,16 @@ class Application:
     #
     # ---------------------------------------------------------------------------------------------------------
     def on_load_network_click(self):
+        file_list = []
         self.builder2 = pygubu.Builder()
         self.builder2.add_from_file('Net_Ui1.ui')
         top3 = tk.Toplevel(self.mainwindow)
-        file_list = glob.glob1(".", '*.pkl')
+        try:
+            for filename in glob.iglob('*/*.pkl', recursive = True):
+                file_list.append(filename)
+        except:
+            for filename in glob.iglob('*\*.pkl', recursive=True):
+                file_list.append(filename)
         self.frame_3 = self.builder2.get_object('Load_Window', top3)
         self.builder2.connect_callbacks(self)
         cbox = self.builder2.get_object('load_combobox')
